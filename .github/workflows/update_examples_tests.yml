@@ -1,0 +1,51 @@
+name: Update pico-examples tests
+
+on:
+  schedule:
+    - cron: "0 8 * * 6"   # weekly
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clone pico-examples repo
+        uses: actions/checkout@v7
+        with:
+          repository: raspberrypi/pico-examples
+          path: resources/pico-examples
+
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@v2
+      
+      - name: Fidn PIO files
+        run: |
+          mkdir -p test/pico-examples
+          find resources/pico-examples/ -name "*.pio" -exec cp {} test/pico-examples/ \;
+
+      - name: Parse examples
+        uses: tree-sitter/parse-action@v4
+        with:
+          files: test/pico-examples/*
+
+      - name: Commit changes
+        run: |
+          if [[ -n $(git ls-files --others | grep test/pico-examples) ]]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+
+            git add test/pico-examples/*
+
+            git commit -m "Update pico-examples tests"
+            git push
+          fi
+          

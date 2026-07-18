@@ -35,6 +35,8 @@
             nodejs
             clang
             python3
+            cargo
+            rustc
           ];
         };
       });
