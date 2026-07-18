@@ -1,0 +1,43 @@
+{
+	"$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+	"grammars": [
+		{
+			"name": "pio",
+			"camelcase": "Pio",
+			"title": "Pio",
+			"scope": "source.pio",
+			"file-types": ["pio"],
+			"injection-regex": "^pio(asm)?$",
+			"class-name": "TreeSitterPio",
+			"highlights": ["queries/highlights.scm"],
+			"injections": ["queries/injections.scm"],
+			"tags": ["queries/tags.scm"],
+			"rainbows": ["queries/rainbows.scm"],
+			"textobjects": ["queries/textobjects.scm"]
+		}
+	],
+	"metadata": {
+		"version": "0.1.0",
+		"license": "MIT",
+		"description": "Pio grammar for tree-sitter",
+		"authors": [
+			{
+				"name": "Niclas Metschke",
+				"email": "niclas.metschke@protonmail.com"
+			}
+		],
+		"links": {
+			"repository": "https://github.com/nmetschke/tree-sitter-pio"
+		}
+	},
+	"bindings": {
+		"c": false,
+		"go": false,
+		"java": false,
+		"node": true,
+		"python": false,
+		"rust": true,
+		"swift": false,
+		"zig": false
+	}
+}
