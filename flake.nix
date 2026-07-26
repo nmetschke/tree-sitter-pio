@@ -32,7 +32,7 @@
           inputsFrom = [ (mkTreeSitterPio pkgs) ];
           packages = with pkgs; [
             tree-sitter
-            nodejs
+            nodejs_22
             clang
             python3
             cargo
