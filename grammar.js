@@ -13,18 +13,16 @@ const CI = (/** @type {string} */ e) => new RustRegex(`(?i)${e}`);
 export default grammar({
 	name: "pio",
 
-	extras: ($) => [/\s/, $.comment],
+	extras: ($) => [/[ \t\r]/, $.comment],
 	word: ($) => $.symbol,
 	externals: ($) => [$.code_block_contents, $.error_sentinel],
 
 	rules: {
-		source_file: ($) => repeat($._definition),
+		source_file: ($) => seq(repeat($._definition), optional($._line)), // last line may not have '\n' at end
 
-		_definition: ($) =>
-			choice(
-				seq(repeat($.label), choice($.instruction, $.directive)), // might have .wrap/.wrap_target after a label
-				$.code_block,
-			),
+		_definition: ($) => choice($.label, "\n", seq($._line, "\n")),
+
+		_line: ($) => choice($.instruction, $.directive, $.code_block),
 
 		comment: ($) => choice($.line_comment, $.block_comment),
 		line_comment: (_) => token(seq(choice("//", ";"), /.*/)),
@@ -38,7 +36,7 @@ export default grammar({
 				$.code_block_contents,
 				alias("%}", $.code_block_end),
 			),
-		code_block_target: (_) => /[a-zA-Z_-][a-zA-Z\d_-]*/,
+		code_block_target: (_) => /[a-zA-Z_-][a-zA-Z\d_-]+/,
 
 		instruction: ($) =>
 			seq(
