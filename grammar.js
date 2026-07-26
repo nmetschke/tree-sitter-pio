@@ -43,7 +43,6 @@ export default grammar({
 				field(
 					"op",
 					choice(
-						// prec(-1, $.naked_instr),
 						$.instr_jmp,
 						$.instr_wait,
 						$.instr_in,
@@ -67,20 +66,6 @@ export default grammar({
 			),
 		side: ($) => seq(CI("side"), $.value),
 		delay: ($) => seq("[", $._expression, "]"),
-
-		// naked_instr: (_) =>
-		// 	choice(
-		// 		CI("jmp"),
-		// 		CI("wait"),
-		// 		CI("in"),
-		// 		CI("out"),
-		// 		CI("push"),
-		// 		CI("pull"),
-		// 		CI("mov"),
-		// 		CI("irq"),
-		// 		CI("set"),
-		// 		CI("nop"),
-		// 	),
 
 		jmp_condition: (_) =>
 			choice(
@@ -161,27 +146,27 @@ export default grammar({
 				alias(CI("jmp"), $.opcode),
 				optional(field("condition", $.jmp_condition)),
 				optional(","),
-				field("target", $.label_reference),
+				optional(field("target", $.label_reference)),
 			),
 		instr_wait: ($) =>
 			seq(
 				alias(CI("wait"), $.opcode),
 				optional(field("polarity", choice("0", "1"))),
-				field("source", $.wait_source),
+				optional(field("source", $.wait_source)),
 			),
 		instr_in: ($) =>
 			seq(
 				alias(CI("in"), $.opcode),
-				field("source", $.in_source),
+				optional(field("source", $.in_source)),
 				optional(","),
-				field("bit_count", $.value),
+				optional(field("bit_count", $.value)),
 			),
 		instr_out: ($) =>
 			seq(
 				alias(CI("out"), $.opcode),
-				field("destination", $.out_destination),
+				optional(field("destination", $.out_destination)),
 				optional(","),
-				field("bit_count", $.value),
+				optional(field("bit_count", $.value)),
 			),
 		instr_push: ($) =>
 			seq(
@@ -198,29 +183,36 @@ export default grammar({
 		instr_mov: ($) =>
 			seq(
 				alias(CI("mov"), $.opcode),
-				field(
-					"destination",
-					choice(
-						$.mov_destination,
-						seq(
-							CI("rxfifo"),
-							"[",
-							field("index", choice(CI("y"), $.value)),
-							"]",
+				optional(
+					seq(
+						field(
+							"destination",
+							choice(
+								$.mov_destination,
+								seq(
+									CI("rxfifo"),
+									"[",
+									field("index", choice(CI("y"), $.value)),
+									"]",
+								),
+							),
 						),
-					),
-				),
-				optional(","),
-				optional(field("mov_op", choice("!", "~", "::"))),
-				field(
-					"source",
-					choice(
-						$.mov_source,
-						seq(
-							CI("rxfifo"),
-							"[",
-							field("index", choice(CI("y"), $.value)),
-							"]",
+
+						optional(","),
+						optional(field("mov_op", choice("!", "~", "::"))),
+						optional(
+							field(
+								"source",
+								choice(
+									$.mov_source,
+									seq(
+										CI("rxfifo"),
+										"[",
+										field("index", choice(CI("y"), $.value)),
+										"]",
+									),
+								),
+							),
 						),
 					),
 				),
@@ -230,15 +222,15 @@ export default grammar({
 				alias(CI("irq"), $.opcode),
 				optional(choice(CI("prev"), CI("next"))),
 				optional($._irq_modifier),
-				field("irq_num", $.value),
+				optional(field("irq_num", $.value)),
 				optional(CI("rel")),
 			),
 		instr_set: ($) =>
 			seq(
 				alias(CI("set"), $.opcode),
-				field("destination", $.set_destination),
+				optional(field("destination", $.set_destination)),
 				optional(","),
-				field("set_value", $.value),
+				optional(field("set_value", $.value)),
 			),
 		instr_nop: ($) => seq(alias(CI("nop"), $.opcode)),
 
@@ -261,8 +253,8 @@ export default grammar({
 				".",
 				alias(token.immediate(CI("define")), $.define_keyword),
 				optional(field("public", $.public)),
-				field("define_symbol", $.symbol),
-				field("define_value", $._expression),
+				optional(field("define_symbol", $.symbol)),
+				optional(field("define_value", $._expression)),
 			),
 
 		_non_define_directive: ($) =>
@@ -285,36 +277,40 @@ export default grammar({
 		directive_clock_div: ($) =>
 			seq(
 				alias(token.immediate(CI("clock_div")), $.define_typ),
-				field("divider", $.float),
+				optional(field("divider", $.float)),
 			),
 		directive_fifo: ($) =>
 			seq(
 				alias(token.immediate(CI("fifo")), $.define_typ),
-				field(
-					"fifo_config",
-					choice(
-						CI("txrx"),
-						CI("tx"),
-						CI("rx"),
-						CI("txput"),
-						CI("txget"),
-						CI("putget"),
+				optional(
+					field(
+						"fifo_config",
+						choice(
+							CI("txrx"),
+							CI("tx"),
+							CI("rx"),
+							CI("txput"),
+							CI("txget"),
+							CI("putget"),
+						),
 					),
 				),
 			),
 		directive_mov_status: ($) =>
 			seq(
 				alias(token.immediate(CI("mov_status")), $.define_typ),
-				choice(
-					seq(choice(CI("rxfifo"), CI("txfifo")), "<"),
-					seq(CI("irq"), optional(choice(CI("prev"), CI("next"))), CI("set")),
+				optional(
+					choice(
+						seq(choice(CI("rxfifo"), CI("txfifo")), "<"),
+						seq(CI("irq"), optional(choice(CI("prev"), CI("next"))), CI("set")),
+					),
 				),
-				field("n", $.value),
+				optional(field("n", $.value)),
 			),
 		directive_in_out: ($) =>
 			seq(
 				alias(token.immediate(choice(CI("in"), CI("out"))), $.define_typ),
-				field("count", $.value),
+				optional(field("count", $.value)),
 				optional(choice(CI("left"), CI("right"))),
 				optional(CI("auto")),
 				optional(field("threshold", $.number)), // TODO: fix
@@ -322,27 +318,27 @@ export default grammar({
 		directive_program: ($) =>
 			seq(
 				alias(token.immediate(CI("program")), $.define_typ),
-				field("program_name", $.symbol),
+				optional(field("program_name", $.symbol)),
 			),
 		directive_origin: ($) =>
 			seq(
 				alias(token.immediate(CI("origin")), $.define_typ),
-				field("offset", $.value),
+				optional(field("offset", $.value)),
 			),
 		directive_pio_version: ($) =>
 			seq(
 				alias(token.immediate(CI("pio_version")), $.define_typ),
-				field("version", $.number),
+				optional(field("version", $.number)),
 			),
 		directive_set: ($) =>
 			seq(
 				alias(token.immediate(CI("set")), $.define_typ),
-				field("count", $.value),
+				optional(field("count", $.value)),
 			),
 		directive_side_set: ($) =>
 			seq(
 				alias(token.immediate(CI("side_set")), $.define_typ),
-				field("count", $.value),
+				optional(field("count", $.value)),
 				optional(CI("opt")),
 				optional(CI("pindirs")),
 			),
@@ -351,14 +347,18 @@ export default grammar({
 		directive_lang_opt: ($) =>
 			seq(
 				alias(token.immediate(CI("lang_opt")), $.define_typ),
-				field("lang", $.symbol),
-				field("name", $.symbol),
-				field("option", seq("=", /[a-zA-Z\d_.]+/)),
+				optional(
+					seq(
+						field("lang", $.symbol),
+						optional(field("name", $.symbol)),
+						optional(field("option", seq("=", /[a-zA-Z\d_.]+/))),
+					),
+				),
 			),
 		directive_word: ($) =>
 			seq(
 				alias(token.immediate(CI("word")), $.define_typ),
-				field("value", $.value),
+				optional(field("value", $.value)),
 			),
 
 		value: ($) =>

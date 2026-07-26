@@ -84,7 +84,7 @@
     "fields": {
       "define_symbol": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "symbol",
@@ -94,7 +94,7 @@
       },
       "define_value": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "binary_expression",
@@ -228,7 +228,7 @@
     "fields": {
       "divider": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "float",
@@ -269,7 +269,7 @@
     "fields": {
       "count": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -305,7 +305,7 @@
     "fields": {
       "lang": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "symbol",
@@ -315,7 +315,7 @@
       },
       "name": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "symbol",
@@ -325,7 +325,7 @@
       },
       "option": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "=",
@@ -351,7 +351,7 @@
     "fields": {
       "n": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -377,7 +377,7 @@
     "fields": {
       "offset": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -403,7 +403,7 @@
     "fields": {
       "version": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "number",
@@ -429,7 +429,7 @@
     "fields": {
       "program_name": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "symbol",
@@ -455,7 +455,7 @@
     "fields": {
       "count": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -481,7 +481,7 @@
     "fields": {
       "count": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -507,7 +507,7 @@
     "fields": {
       "value": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -538,7 +538,7 @@
     "fields": {
       "bit_count": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -548,7 +548,7 @@
       },
       "source": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "in_source",
@@ -574,7 +574,7 @@
     "fields": {
       "irq_num": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -610,7 +610,7 @@
       },
       "target": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "label_reference",
@@ -636,7 +636,7 @@
     "fields": {
       "destination": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "[",
@@ -682,7 +682,7 @@
       },
       "source": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "[",
@@ -731,7 +731,7 @@
     "fields": {
       "bit_count": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -741,7 +741,7 @@
       },
       "destination": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "out_destination",
@@ -805,7 +805,7 @@
     "fields": {
       "destination": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "set_destination",
@@ -815,7 +815,7 @@
       },
       "set_value": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "value",
@@ -855,7 +855,7 @@
       },
       "source": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "wait_source",
@@ -1204,6 +1204,10 @@
         }
       ]
     }
+  },
+  {
+    "type": "\n",
+    "named": false
   },
   {
     "type": "!",

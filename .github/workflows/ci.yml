@@ -22,8 +22,30 @@ concurrency:
   group: ${{github.workflow}}-${{github.ref}}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
+  regenerate:
+    name: Regenerate Parser
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@v2
+      - name: Generate parser files
+        run: tree-sitter generate
+      - name: Commit generated parser files
+        run: |
+          git config --local user.email "$(git log --format='%ae' HEAD^!)"
+          git config --local user.name "$(git log --format='%an' HEAD^!)"
+          git add src
+          git commit -m "Regenerate parser" || true
+          git push
   test:
+    needs: regenerate
     name: Test parser
     runs-on: ${{matrix.os}}
     strategy:
@@ -40,7 +62,7 @@ jobs:
         with:
           test-rust: true
       - name: Parse sample files
-        uses: tree-sitter/parse-action@v7
+        uses: tree-sitter/parse-action@v4
         id: parse-files
         with:
           files: test/pico-examples/**
@@ -51,6 +73,7 @@ jobs:
           name: failures-${{runner.os}}
           path: ${{steps.parse-files.outputs.failures}}
   fuzz:
+    needs: regenerate
     name: Fuzz scanner
     runs-on: ubuntu-latest
     steps:

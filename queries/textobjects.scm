@@ -7,15 +7,13 @@
 (instruction) @entry.around
 (instruction
   op: (_) @entry.inside)
-; (instruction (args) @entry.inside)
 
 ; directives
 (directive) @entry.around
 
 ; labels
-; TODO: inside label
 (label
-  label: (symbol) @function.around)
+  label: (symbol) @function.inside) @function.around
 
 ; comments
 (line_comment) @comment.inside

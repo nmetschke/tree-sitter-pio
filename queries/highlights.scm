@@ -3,7 +3,6 @@
 (hex) @constant.numeric.integer
 (binary) @constant.numeric.integer
 (float) @constant.numeric.float
-; (symbol) @variable
 
 ; comments
 (line_comment) @comment.line
@@ -34,11 +33,10 @@
 ] @operator
 
 ; code blocks
-(code_block
-  (code_block_start) @punctuation.delimiter
-  (code_block_target) @tag
-  (code_block_open) @punctuation.delimiter
-  (code_block_end) @punctuation.delimiter)
+(code_block_start) @punctuation.delimiter
+(code_block_target) @tag
+(code_block_open) @punctuation.delimiter
+(code_block_end) @punctuation.delimiter
 
 ; labels
 (public) @keyword.modifiers
