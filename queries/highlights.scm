@@ -99,5 +99,13 @@
 (wait_source (value) @variable)
 
 
-(block_noblock) @attribute
-; TODO: left, right, auto
+[
+  (block_noblock)
+  (iffull)
+  (ifempty)
+  (irq_target)
+  (irq_modifier)
+  (irq_rel)
+  (opt)
+  (pindirs)
+] @attribute

@@ -328,8 +328,8 @@
         "required": false,
         "types": [
           {
-            "type": "=",
-            "named": false
+            "type": "symbol",
+            "named": true
           }
         ]
       }
@@ -491,11 +491,19 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "define_typ",
+          "named": true
+        },
+        {
+          "type": "opt",
+          "named": true
+        },
+        {
+          "type": "pindirs",
           "named": true
         }
       ]
@@ -584,9 +592,21 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "irq_modifier",
+          "named": true
+        },
+        {
+          "type": "irq_rel",
+          "named": true
+        },
+        {
+          "type": "irq_target",
+          "named": true
+        },
         {
           "type": "opcode",
           "named": true
@@ -598,7 +618,7 @@
     "type": "instr_jmp",
     "named": true,
     "fields": {
-      "condition": {
+      "cond": {
         "multiple": false,
         "required": false,
         "types": [
@@ -635,34 +655,16 @@
     "named": true,
     "fields": {
       "destination": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": "[",
-            "named": false
-          },
-          {
-            "type": "]",
-            "named": false
-          },
           {
             "type": "mov_destination",
             "named": true
           }
         ]
       },
-      "index": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "value",
-            "named": true
-          }
-        ]
-      },
-      "mov_op": {
+      "op": {
         "multiple": false,
         "required": false,
         "types": [
@@ -681,17 +683,9 @@
         ]
       },
       "source": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": "[",
-            "named": false
-          },
-          {
-            "type": "]",
-            "named": false
-          },
           {
             "type": "mov_source",
             "named": true
@@ -774,6 +768,10 @@
           "named": true
         },
         {
+          "type": "ifempty",
+          "named": true
+        },
+        {
           "type": "opcode",
           "named": true
         }
@@ -790,6 +788,10 @@
       "types": [
         {
           "type": "block_noblock",
+          "named": true
+        },
+        {
+          "type": "iffull",
           "named": true
         },
         {
@@ -813,7 +815,7 @@
           }
         ]
       },
-      "set_value": {
+      "value": {
         "multiple": false,
         "required": false,
         "types": [
@@ -948,6 +950,16 @@
     }
   },
   {
+    "type": "irq_modifier",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "irq_target",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "jmp_condition",
     "named": true,
     "fields": {}
@@ -996,12 +1008,34 @@
   {
     "type": "mov_destination",
     "named": true,
-    "fields": {}
+    "fields": {
+      "index": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "mov_source",
     "named": true,
-    "fields": {}
+    "fields": {
+      "index": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "number",
@@ -1195,9 +1229,13 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "irq_target",
+          "named": true
+        },
         {
           "type": "src",
           "named": true
@@ -1270,10 +1308,6 @@
     "named": false
   },
   {
-    "type": "=",
-    "named": false
-  },
-  {
     "type": ">>",
     "named": false
   },
@@ -1338,7 +1372,19 @@
     "named": true
   },
   {
+    "type": "ifempty",
+    "named": true
+  },
+  {
+    "type": "iffull",
+    "named": true
+  },
+  {
     "type": "integer",
+    "named": true
+  },
+  {
+    "type": "irq_rel",
     "named": true
   },
   {
@@ -1347,6 +1393,14 @@
   },
   {
     "type": "opcode",
+    "named": true
+  },
+  {
+    "type": "opt",
+    "named": true
+  },
+  {
+    "type": "pindirs",
     "named": true
   },
   {

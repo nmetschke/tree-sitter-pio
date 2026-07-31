@@ -106,7 +106,7 @@ export default grammar({
 				),
 				seq(
 					alias(CI("irq"), $.src),
-					choice(CI("prev"), CI("next")),
+					$.irq_target,
 					optional(","),
 					field("irq_num", $.value),
 				),
@@ -116,7 +116,7 @@ export default grammar({
 				),
 			),
 		block_noblock: (_) => choice(CI("block"), CI("noblock")),
-		mov_destination: (_) =>
+		mov_destination: ($) =>
 			choice(
 				CI("pins"),
 				CI("x"),
@@ -126,8 +126,9 @@ export default grammar({
 				CI("pc"),
 				CI("isr"),
 				CI("osr"),
+				seq(CI("rxfifo"), "[", field("index", choice(CI("y"), $.value)), "]"),
 			),
-		mov_source: (_) =>
+		mov_source: ($) =>
 			choice(
 				CI("pins"),
 				CI("x"),
@@ -136,6 +137,7 @@ export default grammar({
 				CI("status"),
 				CI("isr"),
 				CI("osr"),
+				seq(CI("rxfifo"), "[", field("index", choice(CI("y"), $.value)), "]"),
 			),
 		set_destination: (_) => choice(CI("pins"), CI("x"), CI("y"), CI("pindirs")),
 
@@ -144,7 +146,7 @@ export default grammar({
 		instr_jmp: ($) =>
 			seq(
 				alias(CI("jmp"), $.opcode),
-				optional(field("condition", $.jmp_condition)),
+				optional(field("cond", $.jmp_condition)),
 				optional(","),
 				optional(field("target", $.label_reference)),
 			),
@@ -171,13 +173,13 @@ export default grammar({
 		instr_push: ($) =>
 			seq(
 				alias(CI("push"), $.opcode),
-				optional(CI("iffull")),
+				optional(alias(CI("iffull"), $.iffull)),
 				optional($.block_noblock),
 			),
 		instr_pull: ($) =>
 			seq(
 				alias(CI("pull"), $.opcode),
-				optional(CI("ifempty")),
+				optional(alias(CI("ifempty"), $.ifempty)),
 				optional($.block_noblock),
 			),
 		instr_mov: ($) =>
@@ -185,57 +187,33 @@ export default grammar({
 				alias(CI("mov"), $.opcode),
 				optional(
 					seq(
-						field(
-							"destination",
-							choice(
-								$.mov_destination,
-								seq(
-									CI("rxfifo"),
-									"[",
-									field("index", choice(CI("y"), $.value)),
-									"]",
-								),
-							),
-						),
-
+						field("destination", $.mov_destination),
 						optional(","),
-						optional(field("mov_op", choice("!", "~", "::"))),
-						optional(
-							field(
-								"source",
-								choice(
-									$.mov_source,
-									seq(
-										CI("rxfifo"),
-										"[",
-										field("index", choice(CI("y"), $.value)),
-										"]",
-									),
-								),
-							),
-						),
+						optional(field("op", choice("!", "~", "::"))),
+						optional(field("source", $.mov_source)),
 					),
 				),
 			),
 		instr_irq: ($) =>
 			seq(
 				alias(CI("irq"), $.opcode),
-				optional(choice(CI("prev"), CI("next"))),
-				optional($._irq_modifier),
+				optional($.irq_target),
+				optional($.irq_modifier),
 				optional(field("irq_num", $.value)),
-				optional(CI("rel")),
+				optional(alias(CI("rel"), $.irq_rel)),
 			),
 		instr_set: ($) =>
 			seq(
 				alias(CI("set"), $.opcode),
 				optional(field("destination", $.set_destination)),
 				optional(","),
-				optional(field("set_value", $.value)),
+				optional(field("value", $.value)),
 			),
 		instr_nop: ($) => seq(alias(CI("nop"), $.opcode)),
 
-		_irq_modifier: (_) =>
+		irq_modifier: (_) =>
 			choice(CI("clear"), CI("wait"), CI("nowait"), CI("set")),
+		irq_target: (_) => choice(CI("prev"), CI("next")),
 
 		label: ($) =>
 			seq(
@@ -339,8 +317,8 @@ export default grammar({
 			seq(
 				alias(token.immediate(CI("side_set")), $.define_typ),
 				optional(field("count", $.value)),
-				optional(CI("opt")),
-				optional(CI("pindirs")),
+				optional(alias(CI("opt"), $.opt)),
+				optional(alias(CI("pindirs"), $.pindirs)),
 			),
 		directive_wrap_target: (_) => token.immediate(CI("wrap_target")),
 		directive_wrap: (_) => token.immediate(CI("wrap")),
@@ -351,7 +329,9 @@ export default grammar({
 					seq(
 						field("lang", $.symbol),
 						optional(field("name", $.symbol)),
-						optional(field("option", seq("=", /[a-zA-Z\d_.]+/))),
+						optional(
+							field("option", alias(seq("=", /[a-zA-Z\d_.]+/), $.symbol)),
+						),
 					),
 				),
 			),
