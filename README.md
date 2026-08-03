@@ -23,7 +23,6 @@ Add this to `~/.congig/helix/languages.toml`.
 [[language]]
 comment-tokens = ";"
 file-types = ["pio"]
-language-servers = ["piolsp"]
 name = "pio"
 scope = "source.pio"
 
@@ -36,3 +35,47 @@ rev = "bc094f6df53f4311468ded14be1c37e8dfdc601c"
 ```
 
 and run `hx --grammar fetch && hx --grammar build`.
+
+## Helix with Nix + home-manager
+
+`flake.nix`:
+
+```nix
+inputs = {
+  tree-sitter-pio = {
+    url = "github:nmetschke/tree-sitter-pio";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+};
+```
+
+and configure helix to use them
+
+```nix
+{ inputs, ... }:
+{
+  programs.helix = {
+    languages = {
+      language = [
+        {
+          name = "pio";
+          scope = "source.pio";
+          file-types = [ "pio" ];
+          comment-tokens = ";";
+        }
+      ];
+      grammar = [
+        {
+          name = "pio";
+          source.path = inputs.tree-sitter-pio;
+        }
+      ];
+    };
+  };
+
+  # link the queries
+  xdg.configFile."helix/runtime/queries/pio".source = "${inputs.tree-sitter-pio}/queries";
+}
+```
+
+You may also want to check out my [PIO LSP Server](https://github.com/nmetschke/tree-sitter-pio).
