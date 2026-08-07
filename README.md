@@ -1,11 +1,13 @@
 [![Build status](https://github.com/nmetschke/tree-sitter-pio/actions/workflows/ci.yml/badge.svg)](https://github.com/nmetschke/tree-sitter-pio/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/tree-sitter-pio.svg)](https://crates.io/crates/tree-sitter-pio)
 
-# About
+# Tree-sitter grammar for PIO assembly files
+
+## About
 
 This repo provides [tree-sitter](https://tree-sitter.github.io/tree-sitter) grammar for Rasperry Pi [PIO assembly files](https://pip-assets.raspberrypi.com/categories/609-microcontroller-boards/documents/RP-009085-KB-2-raspberry-pi-pico-c-sdk.pdf#page=56) (3.3. Using PIOASM, the PIO Assembler) files.
 
-In addition to the grammar, the following queries are included:
+In addition to the grammar, the following queries are provided:
 
 | Query file      | Description                                                                |
 | --------------- | -------------------------------------------------------------------------- |
@@ -15,7 +17,9 @@ In addition to the grammar, the following queries are included:
 | tags.scm        | Tags for .program, .define statements and labels                           |
 | textobjects.scm | Incremental selection for statements, instructions, labels and code blocks |
 
-## Example usage with [Helix](https://github.com/helix-editor/helix)
+## Usage
+
+### Example usage with [Helix](https://github.com/helix-editor/helix)
 
 Add this to `~/.congig/helix/languages.toml`.
 
@@ -36,46 +40,6 @@ rev = "bc094f6df53f4311468ded14be1c37e8dfdc601c"
 
 and run `hx --grammar fetch && hx --grammar build`.
 
-## Helix with Nix + home-manager
+### Nix + Helix
 
-`flake.nix`:
-
-```nix
-inputs = {
-  tree-sitter-pio = {
-    url = "github:nmetschke/tree-sitter-pio";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-};
-```
-
-and configure helix to use them
-
-```nix
-{ inputs, ... }:
-{
-  programs.helix = {
-    languages = {
-      language = [
-        {
-          name = "pio";
-          scope = "source.pio";
-          file-types = [ "pio" ];
-          comment-tokens = ";";
-        }
-      ];
-      grammar = [
-        {
-          name = "pio";
-          source.path = inputs.tree-sitter-pio;
-        }
-      ];
-    };
-  };
-
-  # link the queries
-  xdg.configFile."helix/runtime/queries/pio".source = "${inputs.tree-sitter-pio}/queries";
-}
-```
-
-You may also want to check out my [PIO LSP Server](https://github.com/nmetschke/tree-sitter-pio).
+Some more usage options with [Nix](https://nixos.org) and [Helix](https://github.com/helix-editor/helix) can be found here at my [PIO LSP Server](https://github.com/nmetschke/tree-sitter-pio).
