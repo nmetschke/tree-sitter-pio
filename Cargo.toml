@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-pio"
 description = "Pio grammar for tree-sitter"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Niclas Metschke"]
 license = "MIT"
 readme = "README.md"
@@ -28,7 +28,7 @@ path = "bindings/rust/lib.rs"
 tree-sitter-language = "0.1"
 
 [dev-dependencies]
-tree-sitter = "0.26"
+tree-sitter = "0.27"
 
 [build-dependencies]
 cc = "1.2"
