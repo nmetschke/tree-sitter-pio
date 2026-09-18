@@ -5,9 +5,12 @@ on:
     - cron: "0 8 * * 6"   # weekly
   workflow_dispatch:
 
+# permissions:
+#   contents: write
+#   pull-requests: write
+
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   update-tests:
@@ -15,8 +18,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone pico-examples repo
         uses: actions/checkout@v7
@@ -27,7 +28,7 @@ jobs:
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v2
       
-      - name: Fidn PIO files
+      - name: Find PIO files
         run: |
           mkdir -p test/pico-examples
           find resources/pico-examples/ -name "*.pio" -exec cp {} test/pico-examples/ \;
@@ -40,12 +41,10 @@ jobs:
       - name: Commit changes
         run: |
           if [[ -n $(git ls-files --others | grep test/pico-examples) ]]; then
-            git config user.name "github-actions"
-            git config user.email "github-actions@users.noreply.github.com"
-
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            
             git add test/pico-examples/*
-
             git commit -m "Update pico-examples tests"
             git push
           fi
-          
