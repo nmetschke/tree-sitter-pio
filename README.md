@@ -42,4 +42,4 @@ and run `hx --grammar fetch && hx --grammar build`.
 
 ### Nix + Helix
 
-Some more usage options with [Nix](https://nixos.org) and [Helix](https://github.com/helix-editor/helix) can be found here at my [PIO LSP Server](https://github.com/nmetschke/tree-sitter-pio).
+Some more usage options with [Nix](https://nixos.org) and [Helix](https://github.com/helix-editor/helix) can be found at [PIO LSP Server](https://github.com/nmetschke/piolsp).
